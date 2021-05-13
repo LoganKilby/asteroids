@@ -7,3 +7,4 @@ simulate curved motion (player ship)
 reorganize game object data. SOA?
 scene manager
 refactor opengl calls
+cache font vertices for rendering

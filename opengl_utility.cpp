@@ -20,7 +20,7 @@ OpenGLRenderText(font_buffer *fontBuffer, char *text, glm::vec2 pos, float scale
         float w = character.size.x * scale;
         float h = character.size.y * scale;
         
-        // TODO: Consider caching all vertices and doing matrix fransformations instead
+        // TODO: Consider caching all vertices and doing matrix transformations instead
         float vertices[24] = {
             xpos,     ypos + h,   0.0f, 0.0f,            
             xpos,     ypos,       0.0f, 1.0f,
@@ -41,7 +41,6 @@ OpenGLRenderText(font_buffer *fontBuffer, char *text, glm::vec2 pos, float scale
         glBindTexture(GL_TEXTURE_2D, 0);
         
         pos.x += (character.advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64)
-        
     }
 }
 
@@ -62,9 +61,9 @@ OpenGLInitializeModelBuffer(GLuint *vertexBuffer, GLuint *vertexAttributeObject,
                             GLenum usage)
 {
     glGenVertexArrays(1, vertexAttributeObject);
-    glGenBuffers(1, vertexBuffer); // allocate buffer on the GPU
+    glGenBuffers(1, vertexBuffer);
     glBindVertexArray(*vertexAttributeObject); 
-    glBindBuffer(GL_ARRAY_BUFFER, *vertexBuffer); // bind new buffer to context
+    glBindBuffer(GL_ARRAY_BUFFER, *vertexBuffer);
     if(vertexData)
     {
         glBufferData(GL_ARRAY_BUFFER, bufferSize, vertexData, usage); 
@@ -140,6 +139,7 @@ OpenGLCreateProgram(unsigned int *shaderList, int shaderCount)
         
         GLchar *info = (GLchar *)malloc(infoLength + 1);
         glGetProgramInfoLog(program, infoLength, NULL, info);
+        // TODO: Logging
         fprintf(stderr, "\nA shader failed to link: %s\n", info);
         free(info);
     }
