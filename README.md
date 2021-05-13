@@ -2,16 +2,15 @@
 # asteroids
 Working version of my asteroid game
 
-The game is still in development.
-I have no intentions of using this repository as an up-to-date reference of the game's progress, although I will certainly update it in the future.
-I am archiving it here incase my computer blows up, or the source code is otherwise lost! There is a release available if you'd like to download
-the game and try it. There are a few issues, but the game is playable from start to finish.
+This game is still in development.
+There is a release available if you'd like to download the game and try it. There are a few issues, but the game is playable from start to finish.
 
 # Compiling (.bat file)
 Dependencies:
 * GLFW
 * GLEW
 * GLM
+* OpenGL
 * FreeType
 
 All dependencies are included if you would like to compile the source code. Compiling will require you to alter the
