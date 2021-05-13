@@ -3,6 +3,7 @@ LoadFont(FT_Library ft, FT_Face *face, char *fontName)
 {
     if(FT_New_Face(ft, fontName, 0, face))
     {
+        // TODO: Logging
         printf("ERROR: Could not load font %s\n", fontName);
         return 0;
     }
@@ -16,6 +17,7 @@ InitializeFreeType(FT_Library *ft)
     
     if(FT_Init_FreeType(ft))
     {
+        // TODO: Logging
         printf("ERROR: Could not initialize FreeType library.\n");
         return 0;
     }
@@ -28,6 +30,7 @@ LoadGlyph(font_buffer *fontBuffer, FT_Face face, char charToLoad)
 {
     if(FT_Load_Char(face, charToLoad, FT_LOAD_RENDER))
     {
+        // TODO: Logging
         printf("ERROR: Failed to load Glyph\n");
         return 0;
     }
@@ -69,6 +72,7 @@ LoadGlyphs(FT_Face face, font_buffer *fontBuffer)
     {
         if(FT_Load_Char(face, fontIndex, FT_LOAD_RENDER))
         {
+            // TODO: Logging
             printf("ERROR: Failed to load Glyph #%u\n", fontIndex);
             continue;
         }

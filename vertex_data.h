@@ -186,5 +186,4 @@ float fontVertices[] =
     0, 0, 1.0f, 0.0f            
 };
 
-
 #endif //VERTEX_DATA_H

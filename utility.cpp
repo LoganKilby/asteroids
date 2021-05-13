@@ -16,7 +16,7 @@ InsertionSort(int *arr, int count)
 
 
 static int
-LoadFile(file_buffer *fileBuffer, char *filename)
+ReadEntireFile(file_buffer *fileBuffer, char *filename)
 {
     char *buffer = 0;
     long length;
@@ -31,11 +31,6 @@ LoadFile(file_buffer *fileBuffer, char *filename)
         buffer = (char *)malloc(length + 1);
         if (buffer)
         {
-            // NOTE: I started getting garbage at the end of my buffer, and I think that
-            // fread was reading too many characters? or fseek was reading past the file?
-            // I have no idea. But null terminating the buffer at the point when fread
-            // stops reading seems to fix the issue.
-            
             int bytesRead = fread(buffer, 1, length, fileHandle);
             buffer[bytesRead] = '\0';
             fileBuffer->buffer = buffer;
@@ -49,6 +44,7 @@ LoadFile(file_buffer *fileBuffer, char *filename)
     }
     else
     {
+        // TODO: Logging
         printf("An error occured while opening the file \"%s\"\n", filename);
         return 0;
     }
@@ -57,7 +53,7 @@ LoadFile(file_buffer *fileBuffer, char *filename)
 }
 
 static int
-WriteFile(char *buffer, int size, char *filename)
+WriteEntireFile(char *buffer, int size, char *filename)
 {
     FILE *fileHandle = fopen(filename, "w+");
     int error;

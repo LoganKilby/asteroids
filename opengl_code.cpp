@@ -1,5 +1,5 @@
 #include "vertex_data.h"
-#include "practice.h"
+#include "win32_asteroids.h"
 #include "math.h"
 #include "opengl_utility.h"
 #include "opengl_code.h"
@@ -345,8 +345,8 @@ UpdateGameAndRender(open_gl_state *openGLState,
         file_buffer vertexShader;
         file_buffer fragmentShader;
         
-        LoadFile(&vertexShader, "shaders/object_vertex_shader");
-        LoadFile(&fragmentShader, "shaders/object_fragment_shader");
+        ReadEntireFile(&vertexShader, "shaders/object_vertex_shader");
+        ReadEntireFile(&fragmentShader, "shaders/object_fragment_shader");
         tempShaderList[0] = OpenGLCreateShader(GL_VERTEX_SHADER, vertexShader.buffer);
         tempShaderList[1] = OpenGLCreateShader(GL_FRAGMENT_SHADER, fragmentShader.buffer);
         openGLState->shaderProgram = OpenGLCreateProgram(&tempShaderList[0], 2);
@@ -355,8 +355,8 @@ UpdateGameAndRender(open_gl_state *openGLState,
         vertexShader = {};
         fragmentShader = {};
         
-        LoadFile(&vertexShader, "shaders/font_vertex_shader");
-        LoadFile(&fragmentShader, "shaders/font_fragment_shader");
+        ReadEntireFile(&vertexShader, "shaders/font_vertex_shader");
+        ReadEntireFile(&fragmentShader, "shaders/font_fragment_shader");
         tempShaderList[0] = OpenGLCreateShader(GL_VERTEX_SHADER, vertexShader.buffer);
         tempShaderList[1] = OpenGLCreateShader(GL_FRAGMENT_SHADER, fragmentShader.buffer);
         openGLState->fontShaderProgram = OpenGLCreateProgram(&tempShaderList[0], 2);
@@ -444,7 +444,7 @@ UpdateGameAndRender(open_gl_state *openGLState,
         gameState->maxLives = 5;
         gameState->livesLeft = 5;
         
-        LoadFile(&gameState->highScores, "high_scores.txt");
+        ReadEntireFile(&gameState->highScores, "high_scores.txt");
         if(gameState->highScores.size > 0)
         {
             
@@ -758,7 +758,7 @@ UpdateGameAndRender(open_gl_state *openGLState,
                             bool collisionDetected = CheckCollision(projectileCollisionBox, asteroidCollisionBox);
                             if(collisionDetected)
                             {
-                                printf("PROJECTILE & ASTEROID COLLISION\n");
+                                // NOTE: Projectile & Asteroid collision
                                 projectileData->projectiles[pIndex].isActive = 0;
                                 projectileData->currentCount--;
                                 asteroidData->asteroids[aIndex].isActive = 0;
@@ -822,7 +822,7 @@ UpdateGameAndRender(open_gl_state *openGLState,
                     bool collisionDetected = CheckCollision(shipCollisionBox, asteroidCollisionBox);
                     if(collisionDetected)
                     {
-                        printf("SHIP & ASTEROID COLLISION\n");
+                        // NODE: Ship & Asteroid Collision
                         if(gameState->livesLeft > 1)
                         {
                             float collisionTimer = openGLState->secondsElapsed + 1.5f;
@@ -864,7 +864,7 @@ UpdateGameAndRender(open_gl_state *openGLState,
                                     }
                                 }
                             }
-                            WriteFile(writeBuffer, sizeof(writeBuffer), "high_scores.txt");
+                            WriteEntireFile(writeBuffer, sizeof(writeBuffer), "high_scores.txt");
                             break;
                         }
                     }
@@ -885,8 +885,7 @@ UpdateGameAndRender(open_gl_state *openGLState,
                             bool collisionDetected = CheckCollision(projectileCollisionBox, asteroidCollisionBox);
                             if(collisionDetected)
                             {
-                                printf("PROJECTILE & ASTEROID COLLISION\n");
-                                
+                                // NOTE: Projectile & Asteroid Collision
                                 projectileData->projectiles[pIndex].isActive = 0;
                                 projectileData->currentCount--;
                                 asteroidData->asteroids[aIndex].isActive = 0;
@@ -919,7 +918,6 @@ UpdateGameAndRender(open_gl_state *openGLState,
     
     if(gameState->stage > 0)
     {
-        // DRAW SHIP
         if(shipData->isVisible)
         {
             glm::vec4 shipPos = glm::vec4(triangle[0], triangle[1], 0.0f, 1.0f);
@@ -950,11 +948,9 @@ UpdateGameAndRender(open_gl_state *openGLState,
             glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
             glDrawArrays(GL_TRIANGLES, 0, 6);
             glDisableVertexAttribArray(0);
-            //OpenGLDraw(shipData->vertexAttribute, GL_TRIANGLES, 0, 6);
             shipIndicatorPos.x += 50;
         }
         
-        // DRAW PROJECTILES
         for(int projIndex = 0;
             projIndex < projectileData->maxCount;
             ++projIndex)
@@ -979,7 +975,6 @@ UpdateGameAndRender(open_gl_state *openGLState,
         }
     }
     
-    // DRAW ASTEROID
     int bufferIndex;
     for(int asteroidIndex = 0; asteroidIndex < asteroidData->maxCount; ++asteroidIndex)
     {
@@ -1003,9 +998,6 @@ UpdateGameAndRender(open_gl_state *openGLState,
         }
     }
     
-    
-    
-    // TODO: Write a scene manager
     glUseProgram(openGLState->fontShaderProgram);
     glUniform3f(openGLState->fontTextColorUniform, 1.0f, 1.0f, 1.0f);
     glUniformMatrix4fv(openGLState->fontProjectionUniform, 1, GL_FALSE,
@@ -1035,8 +1027,6 @@ UpdateGameAndRender(open_gl_state *openGLState,
     }
     else if(gameState->stage == -1)
     {
-        //OpenGLRenderText(fontBuffer, "High scores:", glm::vec2(0, windowDimensions.height - 50.0f), 1.0f);
-        
         glm::vec2 highScorePos = glm::vec2(0, (windowDimensions.height - 50.0f));
         int err;
         for(int i = 0; i < 10; ++i)

@@ -4,10 +4,6 @@
 static bool
 CheckCollision(collision_box regionOne, collision_box regionTwo)
 {
-    // for both boxes:
-    // check if a point on the rectangle is inside the other rectangle
-    //TODO: I ONLY NEED CORNER POINTS?
-    
     bool xAxisCollision = false;
     bool yAxisCollision = false;
     

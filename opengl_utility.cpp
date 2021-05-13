@@ -1,12 +1,12 @@
-#include "practice.h"
+#include "win32_asteroids.h"
 
 static void
 OpenGLRenderText(font_buffer *fontBuffer, char *text, glm::vec2 pos, float scale)
 {
     glActiveTexture(GL_TEXTURE0);
-    //glBindVertexArray(fontBuffer->vertexAttribute);
     int messageLength = strlen(text);
     glyph character = {};
+    
     for(int messageIndex = 0; messageIndex < messageLength; ++messageIndex)
     {
         character.textureID = fontBuffer->textureID[text[messageIndex]];
@@ -40,11 +40,9 @@ OpenGLRenderText(font_buffer *fontBuffer, char *text, glm::vec2 pos, float scale
         glDisableVertexAttribArray(0);
         glBindTexture(GL_TEXTURE_2D, 0);
         
-        // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
         pos.x += (character.advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64)
         
     }
-    //glBindVertexArray(0);
 }
 
 static void
@@ -96,7 +94,6 @@ OpenGLUpdateAspectRatio(int width, int height)
     float ratioY = height / (float)WINDOW_HEIGHT;
     float ratio = ratioX < ratioY ? ratioX : ratioY;
     
-    //width & height to be rendered to
     int viewWidth = WINDOW_WIDTH * ratio;
     int viewHeight = WINDOW_HEIGHT * ratio;
     
@@ -120,9 +117,6 @@ OpenGLCreateProgram(unsigned int *shaderList, int shaderCount)
         }
     }
     
-    // I don't want to pollute the stderr info with redundant remarks about an invalid shader
-    // compilation. If the shaders are valid and the link still fails, I won't miss any error
-    // info
     if(!shadersValid)
     {
         return 0;
@@ -185,6 +179,7 @@ OpenGLCreateShader(GLenum shaderType, char* shaderBuffer)
         GLchar *strInfoLog = (GLchar *)malloc(infoLogLength);
         glGetShaderInfoLog(shader, infoLogLength, NULL, strInfoLog);
         
+        // TODO: Logging
         fprintf(stderr, "\nAn error occured when compiling the %s shader\n", strShaderType);
         fprintf(stderr, "%s\n", strInfoLog);
         fprintf(stderr, "%s\n", shaderBuffer);

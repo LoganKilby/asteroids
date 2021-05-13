@@ -10,6 +10,6 @@ struct file_buffer
 };
 
 static int
-LoadFile(file_buffer*, char*);
+ReadEntireFile(file_buffer*, char*);
 
 #endif //UTILITY_H
