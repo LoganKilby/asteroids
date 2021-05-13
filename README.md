@@ -1,3 +1,4 @@
+
 # asteroids
 Working version of my asteroid game
 
@@ -16,7 +17,5 @@ All dependencies are included in the source. Compiling will require you to alter
 file path of the freetype_include, glfw_lib, and freetype_lib variables in the build.bat file.
 
 #
-https://user-images.githubusercontent.com/23220511/118138428-ed8b6280-b3cb-11eb-8456-362f6ae538fc.mp4
-
-
+![ezgif com-gif-maker](https://user-images.githubusercontent.com/23220511/118140574-1876b600-b3ce-11eb-8671-681750d417a3.gif)
 
