@@ -145,10 +145,10 @@ DebugSpawnAsteroid(asteroid_data *asteroidData, glm::vec2 position, glm::vec2 si
     float angle =  ((double)rand() / (RAND_MAX + 1)) * 360;
     
     asteroidData->asteroids[index].position = position;
-    asteroidData->asteroids[index].movementSpeed = 0; // TODO: scale with difficulty
-    asteroidData->asteroids[index].movementAngle = 0; // TODO: randomize
-    asteroidData->asteroids[index].rotationAngle = 0; // TODO: randomize
-    asteroidData->asteroids[index].rotationSpeed = 0; // TODO: ramdomize
+    asteroidData->asteroids[index].movementSpeed = 0;
+    asteroidData->asteroids[index].movementAngle = 0;
+    asteroidData->asteroids[index].rotationAngle = 0;
+    asteroidData->asteroids[index].rotationSpeed = 0;
     asteroidData->asteroids[index].size = size;
     asteroidData->asteroids[index].bufferIndex = vertexBufferIndex;
     asteroidData->asteroids[index].isActive = 1;
@@ -175,7 +175,7 @@ DrawShip(ship_data shipData, glm::vec2 position, GLint matrixUniform, bool drawC
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glDisableVertexAttribArray(0);
-    //OpenGLDraw(shipData.vertexAttribute, GL_TRIANGLES, 0, 6);
+    
     if(drawCollisionBox)
     {
         glBindBuffer(GL_ARRAY_BUFFER, shipData.collisionVertexBuffer);
@@ -183,7 +183,6 @@ DrawShip(ship_data shipData, glm::vec2 position, GLint matrixUniform, bool drawC
         glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
         glDrawArrays(GL_LINE_STRIP, 0, 6);
         glDisableVertexAttribArray(0);
-        //OpenGLDraw(shipData.collisionVertexAttribute, GL_LINE_STRIP, 0, 5);
     }
     
     if(shipData.isThrusterActive)
@@ -193,7 +192,6 @@ DrawShip(ship_data shipData, glm::vec2 position, GLint matrixUniform, bool drawC
         glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
         glDrawArrays(GL_LINES, 0, 6);
         glDisableVertexAttribArray(0);
-        //OpenGLDraw(shipData.thrusterAttribute, GL_LINES, 0, 6);
     }
 }
 
@@ -210,9 +208,6 @@ DrawProjectile(projectile projectile, glm::vec2 position, glm::vec2 size,
                                   glm::radians(projectile.angle),
                                   glm::vec3(0.0f, 0.0f, 1.0f));
     
-    // NOTE: I adjusted the vertex data to be smaller, and scaled the projectiles up by the
-    // scale factor used for the ship. This fixes the problem I've been having with
-    // the projectiles not shooting out from the tip of the space craft.
     projectileModel =  glm::scale(projectileModel, glm::vec3(size, 1.0f));
     glUniformMatrix4fv(matrixUniform, 1, GL_FALSE, glm::value_ptr(projectileModel));
     
@@ -221,7 +216,6 @@ DrawProjectile(projectile projectile, glm::vec2 position, glm::vec2 size,
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
     glDrawArrays(GL_LINES, 0, 2);
     glDisableVertexAttribArray(0);
-    //OpenGLDraw(vertexAttribute, GL_LINES, 0, 2);
 }
 
 static void
@@ -242,11 +236,6 @@ DrawAsteroid(asteroid asteroid, glm::vec2 position, GLint matrixUniform, GLuint 
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
     glDrawArrays(GL_LINE_STRIP, 0, bufferVertexCount[asteroid.bufferIndex]);
     glDisableVertexAttribArray(0);
-    
-    /*
-    OpenGLDraw(vertexAttributes[asteroid.bufferIndex], GL_LINE_STRIP, 0, 
-               bufferVertexCount[asteroid.bufferIndex]);
-*/
 }
 
 static void
@@ -274,7 +263,6 @@ UpdatePosition(glm::vec2 *position, glm::vec2 wrappedPositions[6],
     if((position->x > wDims.width || position->x < 0) ||
        (position->y > wDims.height || position->y < 0))
     {
-        printf("Updating position from %f, %f\n", position->x, position->y);
         for(int i = 0; i < 6; ++i)
         {
             if((wrappedPositions[i].x < wDims.width && 
@@ -298,9 +286,6 @@ UpdateGameAndRender(open_gl_state *openGLState,
                     asteroid_data *asteroidData,
                     font_buffer *fontBuffer)
 {
-    // TODO: I could allocate enough memory for an open_gl_state struct and cast the
-    // memory here in in the game loop.
-    
     if(!openGLState->IsInitialized)
     {
         srand(time(0));
@@ -309,13 +294,6 @@ UpdateGameAndRender(open_gl_state *openGLState,
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         
-        
-        
-#if GLT_ENABLED
-        gltInit();
-        fontBuffer->text = gltCreateText();
-        gltSetText(fontBuffer->text, "Game Over");
-#else
         FT_Library ft;
         if(InitializeFreeType(&ft))
         {
@@ -340,7 +318,7 @@ UpdateGameAndRender(open_gl_state *openGLState,
             // Logging
         }
         FT_Done_FreeType(ft);
-#endif
+        
         unsigned int tempShaderList[2];
         file_buffer vertexShader;
         file_buffer fragmentShader;
@@ -420,9 +398,9 @@ UpdateGameAndRender(open_gl_state *openGLState,
             SpawnAsteroid(asteroidData, spawnPosition, glm::vec2(100.0f, 100.0f), 0);
         }
         
+        shipData->vertexCount = (sizeof(triangle) / sizeof(float)) / 4;
         OpenGLInitializeModelBuffer(&shipData->vertexBuffer, &shipData->vertexAttribute,
                                     triangle, 4, sizeof(triangle), GL_STATIC_DRAW);
-        shipData->vertexCount = (sizeof(triangle) / sizeof(float)) / 4;
         OpenGLInitializeModelBuffer(&shipData->thrusterBuffer, &shipData->thrusterAttribute,
                                     thruster, 4, sizeof(thruster), GL_STATIC_DRAW);
         OpenGLInitializeModelBuffer(&shipData->collisionVertexBuffer,
@@ -510,7 +488,7 @@ UpdateGameAndRender(open_gl_state *openGLState,
                 if(shipData->currentSpeed < 3000.0f)
                 {
                     if(shipData->currentSpeed > 25 &&
-                       shipData->movementAngle != shipData->angle) // Changing directions
+                       shipData->movementAngle != shipData->angle) 
                     {
                         shipData->currentSpeed -= 2 * SHIP_ACCELERATION * openGLState->frameTime;
 #if 0
@@ -655,8 +633,6 @@ UpdateGameAndRender(open_gl_state *openGLState,
         gameState->stage++;
     }
     
-    // TODO: calling update position this many times makes me think I could reorganize
-    // the "position" data in one place, like in SOA fashion
     if(gameState->stage > 0)
     {
         UpdatePosition(&shipData->position, shipData->wrappedPositions, openGLState->frameTime, 
@@ -822,7 +798,7 @@ UpdateGameAndRender(open_gl_state *openGLState,
                     bool collisionDetected = CheckCollision(shipCollisionBox, asteroidCollisionBox);
                     if(collisionDetected)
                     {
-                        // NODE: Ship & Asteroid Collision
+                        // NOTE: Ship & Asteroid collision
                         if(gameState->livesLeft > 1)
                         {
                             float collisionTimer = openGLState->secondsElapsed + 1.5f;
@@ -885,7 +861,7 @@ UpdateGameAndRender(open_gl_state *openGLState,
                             bool collisionDetected = CheckCollision(projectileCollisionBox, asteroidCollisionBox);
                             if(collisionDetected)
                             {
-                                // NOTE: Projectile & Asteroid Collision
+                                // NOTE: Projectile & Asteroid collision
                                 projectileData->projectiles[pIndex].isActive = 0;
                                 projectileData->currentCount--;
                                 asteroidData->asteroids[aIndex].isActive = 0;
@@ -911,7 +887,6 @@ UpdateGameAndRender(open_gl_state *openGLState,
     }
     
     glClear(GL_COLOR_BUFFER_BIT);
-    
     glUseProgram(openGLState->shaderProgram);
     glUniformMatrix4fv(openGLState->projectionUniform, 1, GL_FALSE,
                        glm::value_ptr(openGLState->projectionMatrix));
@@ -1031,6 +1006,7 @@ UpdateGameAndRender(open_gl_state *openGLState,
         int err;
         for(int i = 0; i < 10; ++i)
         {
+            // TODO: Logging
             err = snprintf(scoreBuffer, 
                            sizeof(scoreBuffer), 
                            "%d", gameState->topTenScores[i]);
