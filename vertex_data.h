@@ -12,7 +12,7 @@ float collisionVertexData[] =
     -0.5, 0.5f, 0.0f, 1.0f
 };
 
-float triangle[] = 
+float shipVertices[] = 
 {
     0.0f, 0.5f, 0.0f, 1.0f,
     -0.5, -0.5, 0.0f, 1.0f,
@@ -22,7 +22,7 @@ float triangle[] =
     0.5, -0.5, 0.0f, 1.0f
 };
 
-float thruster[] = 
+float thrusterVertices[] = 
 {
     0.0f, -0.25f, 0.0f, 1.0f,
     0.0f, -0.5f, 0.0f, 1.0f,

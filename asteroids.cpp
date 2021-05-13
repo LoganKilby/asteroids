@@ -14,24 +14,7 @@
 #define SPACE_KEY 32
 
 #define SHIP_ACCELERATION 400.0f
-
 #define ArrayCount(Array) (sizeof(Array) / sizeof((Array)[0]))
-
-#define GLT_ENABLED 0
-
-static void
-ReverseString(char *input)
-{
-    int length = strlen(input);
-    int lastPos = length - 1;
-    char tmp;
-    for(int i = 0; i < length / 2; i++)
-    {
-        tmp = input[i];
-        input[i] = input[lastPos - i];
-        input[lastPos - i] = tmp;
-    }
-}
 
 static int
 IntArrayToInt(int *numbers, int size)
@@ -310,12 +293,12 @@ UpdateGameAndRender(open_gl_state *openGLState,
             }
             else
             {
-                // Logging 
+                // TODO: Logging 
             }
         }
         else
         {
-            // Logging
+            // TODO: Logging
         }
         FT_Done_FreeType(ft);
         
@@ -367,9 +350,9 @@ UpdateGameAndRender(open_gl_state *openGLState,
         projectileData->size = glm::vec2(15.0f, 15.0f);
         projectileData->speed = 450.0f;
         
-        asteroidData->bufferVertexCount[0] = (sizeof(asteroidBig0) / sizeof(float)) / 4;
-        asteroidData->bufferVertexCount[1] = (sizeof(asteroidBig1) / sizeof(float)) / 4;
-        asteroidData->bufferVertexCount[2] = (sizeof(asteroidBig2) / sizeof(float)) / 4;
+        asteroidData->bufferVertexCount[0] = ArrayCount(asteroidBig0) / 4;
+        asteroidData->bufferVertexCount[1] = ArrayCount(asteroidBig1) / 4;
+        asteroidData->bufferVertexCount[2] = ArrayCount(asteroidBig2) / 4;
         
         OpenGLInitializeModelBuffer(&asteroidData->vertexBuffers[0], 
                                     &asteroidData->vertexAttributes[0],
@@ -398,11 +381,11 @@ UpdateGameAndRender(open_gl_state *openGLState,
             SpawnAsteroid(asteroidData, spawnPosition, glm::vec2(100.0f, 100.0f), 0);
         }
         
-        shipData->vertexCount = (sizeof(triangle) / sizeof(float)) / 4;
+        shipData->vertexCount = ArrayCount(shipVertices) / 4;
         OpenGLInitializeModelBuffer(&shipData->vertexBuffer, &shipData->vertexAttribute,
-                                    triangle, 4, sizeof(triangle), GL_STATIC_DRAW);
+                                    shipVertices, 4, sizeof(shipVertices), GL_STATIC_DRAW);
         OpenGLInitializeModelBuffer(&shipData->thrusterBuffer, &shipData->thrusterAttribute,
-                                    thruster, 4, sizeof(thruster), GL_STATIC_DRAW);
+                                    thrusterVertices, 4, sizeof(thrusterVertices), GL_STATIC_DRAW);
         OpenGLInitializeModelBuffer(&shipData->collisionVertexBuffer,
                                     &shipData->collisionVertexAttribute,
                                     collisionVertexData, 4,
@@ -456,7 +439,7 @@ UpdateGameAndRender(open_gl_state *openGLState,
                 }
             }
             
-            InsertionSort(gameState->topTenScores, sizeof(gameState->topTenScores) / sizeof(int));
+            InsertionSort(gameState->topTenScores, ArrayCount(gameState->topTenScores));
         }
         else
         {
@@ -491,7 +474,7 @@ UpdateGameAndRender(open_gl_state *openGLState,
                     {
                         shipData->currentSpeed -= 2 * SHIP_ACCELERATION * openGLState->frameTime;
 #if 0
-                        // TODO: Simulate curved motion. Currently unsolved
+                        // TODO: Simulate curved motion.
                         shipData->movementAngle = NormalizeAngle(shipData->movementAngle);
                         shipData->angle = NormalizeAngle(shipData->angle);
                         if(shipData->movementAngle < shipData->angle)
@@ -817,7 +800,7 @@ UpdateGameAndRender(open_gl_state *openGLState,
                             if(gameState->score > gameState->topTenScores[9])
                             {
                                 gameState->topTenScores[9] = gameState->score;
-                                InsertionSort(gameState->topTenScores, sizeof(gameState->topTenScores) / sizeof(int));
+                                InsertionSort(gameState->topTenScores, ArrayCount(gameState->topTenScores));
                             }
                             
                             char writeBuffer[12 * 10] = {};
@@ -894,7 +877,7 @@ UpdateGameAndRender(open_gl_state *openGLState,
     {
         if(shipData->isVisible)
         {
-            glm::vec4 shipPos = glm::vec4(triangle[0], triangle[1], 0.0f, 1.0f);
+            glm::vec4 shipPos = glm::vec4(shipVertices[0], shipVertices[1], 0.0f, 1.0f);
             DrawShip(*shipData, shipData->position, openGLState->rMatrixUniform, false);
             for(int positionIndex = 0; positionIndex < 6; ++positionIndex)
             {
