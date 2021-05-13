@@ -425,7 +425,6 @@ UpdateGameAndRender(open_gl_state *openGLState,
         ReadEntireFile(&gameState->highScores, "high_scores.txt");
         if(gameState->highScores.size > 0)
         {
-            
             int digitBuffer[11] = {};
             int j = 0;
             int digitCount = 0;
