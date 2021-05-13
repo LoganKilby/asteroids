@@ -2,7 +2,7 @@
 #include "win32_asteroids.h"
 #include "math.h"
 #include "opengl_utility.h"
-#include "opengl_code.h"
+#include "asteroids.h"
 #include "time.h"
 #include "collision.h"
 

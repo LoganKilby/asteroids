@@ -13,7 +13,7 @@
 #include "utility.cpp"
 #include "fonts.cpp"
 #include "opengl_utility.cpp"
-#include "opengl_code.cpp"
+#include "asteroids.cpp"
 #include "collision.cpp"
 
 static bool globalRunning;
