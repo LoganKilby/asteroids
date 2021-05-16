@@ -1,15 +1,15 @@
 #define GLEW_STATIC
 #include "windows.h"
-#include "glew-2.1.0\src\glew.c"
-#include "glfw-3.3.3.bin.WIN64\include\GLFW\glfw3.h"
-#include "free_type\include\ft2build.h"
+#include "libs\glew-2.1.0\src\glew.c"
+#include "libs\glfw-3.3.3.bin.WIN64\include\GLFW\glfw3.h"
+#include "include/ft2build.h"
 #include FT_FREETYPE_H
 #include <stdio.h>
 #include "win32_asteroids.h"
 #include "time.h"
 
-#include "glm/glm/gtc/matrix_transform.hpp"
-#include "glm/glm/gtc/type_ptr.hpp"
+#include "libs\glm/glm/gtc/matrix_transform.hpp"
+#include "libs\glm/glm/gtc/type_ptr.hpp"
 #include "utility.cpp"
 #include "fonts.cpp"
 #include "opengl_utility.cpp"

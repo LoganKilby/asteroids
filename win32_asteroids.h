@@ -1,5 +1,5 @@
 /* date = March 24th 2021 8:47 pm */
-#include "glm/glm/glm.hpp"
+#include "libs\glm\glm\glm.hpp"
 #include "utility.h"
 
 #ifndef WIN32_ASTEROIDS_H

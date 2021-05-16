@@ -567,6 +567,7 @@ UpdateGameAndRender(open_gl_state *openGLState,
                     memset(projectileData->projectiles, 0, sizeof(projectile) * projectileData->maxCount);
                     asteroidData->currentCount = 0;
                     projectileData->currentCount = 0;
+                    projectileData->lastProjTimeStamp = openGLState->secondsElapsed = 0.5f;
                     
                     shipData->position.x = windowDimensions.width / 2;
                     shipData->position.y = windowDimensions.height / 2;
