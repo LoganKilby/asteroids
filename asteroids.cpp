@@ -608,10 +608,29 @@ UpdateGameAndRender(open_gl_state *openGLState,
     if(asteroidData->currentCount == 0)
     {
         glm::vec2 spawnPosition;
+        bool spawnLeft = true;
         for(int stageIndex = 0; stageIndex < gameState->stage; ++stageIndex)
         {
-            spawnPosition.x = ((double)rand() / (RAND_MAX + 1)) * windowDimensions.width;
-            spawnPosition.y = ((double)rand() / (RAND_MAX + 1)) * windowDimensions.height;
+            // Alternate spawning asteroids on either side of the screen and not in the middle.
+            // I could do something fancier by using the postion of the player to not spawn
+            // asteroids near them
+            int regionRightMin = ((windowDimensions.width / 11) * 9);
+            int regionLeftMax = ((windowDimensions.width / 11) * 2);
+            
+            if(spawnLeft)
+            {
+                spawnPosition.x = rand() % ((windowDimensions.width + 1) - regionRightMin)
+                    + regionRightMin;
+                spawnPosition.y = rand() % (windowDimensions.height + 1);
+                spawnLeft = false;
+            }
+            else
+            {
+                spawnPosition.x = rand() % (regionLeftMax + 1);
+                spawnPosition.y = rand() % (windowDimensions.height + 1);
+                spawnLeft = true;
+            }
+            
             SpawnAsteroid(asteroidData, spawnPosition, glm::vec2(100.0f, 100.0f), 0);
         }
         gameState->stage++;
@@ -632,6 +651,7 @@ UpdateGameAndRender(open_gl_state *openGLState,
             if(projTimeElapsed > projectileData->maxTimeAlive)
             {
                 projectileData->projectiles[projectileIndex].isActive = 0;
+                projectileData->currentCount--;
             }
             else
             {
