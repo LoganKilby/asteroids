@@ -2,9 +2,8 @@ font alignment
 aspect ratio
 error logging
 consistent projectile timing
-memory page allocation
 simulate curved motion (player ship)
-reorganize game object data. SOA?
-scene manager
+scene manager?
 refactor opengl calls
 cache font vertices for rendering
+sound

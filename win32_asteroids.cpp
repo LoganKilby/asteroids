@@ -8,8 +8,8 @@
 #include "win32_asteroids.h"
 #include "time.h"
 
-#include "libs\glm/glm/gtc/matrix_transform.hpp"
-#include "libs\glm/glm/gtc/type_ptr.hpp"
+#include "libs/glm/glm/gtc/matrix_transform.hpp"
+#include "libs/glm/glm/gtc/type_ptr.hpp"
 #include "utility.cpp"
 #include "fonts.cpp"
 #include "opengl_utility.cpp"

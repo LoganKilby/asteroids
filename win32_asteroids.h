@@ -57,6 +57,7 @@ struct open_gl_state
 struct projectile
 {
     unsigned int isActive;
+    float timeStamp;
     float angle;
     glm::vec2 position;
     glm::vec2 wrappedPositions[6];
@@ -67,9 +68,10 @@ struct projectile_data
     GLuint vertexAttribute;
     GLuint vertexBuffer;
     unsigned int fireProjectile;
-    int lastProjTimeStamp;
+    float lastProjTimeStamp;
     int currentCount;
     int maxCount;
+    float maxTimeAlive;
     float speed;
     glm::vec2 size; 
     projectile *projectiles;

@@ -349,6 +349,7 @@ UpdateGameAndRender(open_gl_state *openGLState,
         projectileData->maxCount = maxProjectileCount;
         projectileData->size = glm::vec2(15.0f, 15.0f);
         projectileData->speed = 450.0f;
+        projectileData->maxTimeAlive = 3.5f;
         
         asteroidData->bufferVertexCount[0] = ArrayCount(asteroidBig0) / 4;
         asteroidData->bufferVertexCount[1] = ArrayCount(asteroidBig1) / 4;
@@ -536,13 +537,12 @@ UpdateGameAndRender(open_gl_state *openGLState,
                 {
                     if(projectileData->currentCount < projectileData->maxCount)
                     {
-                        float currentTiming = openGLState->secondsElapsed;
-                        float timeSinceLastProj = currentTiming -
+                        float timeSinceLastProj = openGLState->secondsElapsed -
                             projectileData->lastProjTimeStamp;
                         
                         if(timeSinceLastProj > 1.0f)
                         {
-                            projectileData->lastProjTimeStamp = currentTiming;
+                            projectileData->lastProjTimeStamp = openGLState->secondsElapsed;
                             
                             int projectileIndex = 0;
                             for(int projIndex = 0; 
@@ -554,6 +554,7 @@ UpdateGameAndRender(open_gl_state *openGLState,
                                     projectileData->projectiles[projIndex].isActive = 1;
                                     projectileData->projectiles[projIndex].angle = shipData->angle;
                                     projectileData->projectiles[projIndex].position = shipData->position;
+                                    projectileData->projectiles[projIndex].timeStamp = openGLState->secondsElapsed;
                                     projectileData->currentCount++;
                                     break;
                                 }
@@ -567,7 +568,7 @@ UpdateGameAndRender(open_gl_state *openGLState,
                     memset(projectileData->projectiles, 0, sizeof(projectile) * projectileData->maxCount);
                     asteroidData->currentCount = 0;
                     projectileData->currentCount = 0;
-                    projectileData->lastProjTimeStamp = openGLState->secondsElapsed = 0.5f;
+                    projectileData->lastProjTimeStamp = openGLState->secondsElapsed - 0.5f;
                     
                     shipData->position.x = windowDimensions.width / 2;
                     shipData->position.y = windowDimensions.height / 2;
@@ -626,12 +627,21 @@ UpdateGameAndRender(open_gl_state *openGLState,
     {
         if(projectileData->projectiles[projectileIndex].isActive)
         {
-            UpdatePosition(&projectileData->projectiles[projectileIndex].position,
-                           projectileData->projectiles[projectileIndex].wrappedPositions,
-                           openGLState->frameTime,
-                           projectileData->speed,
-                           projectileData->projectiles[projectileIndex].angle,
-                           windowDimensions);
+            
+            float projTimeElapsed = openGLState->secondsElapsed - projectileData->projectiles[projectileIndex].timeStamp;
+            if(projTimeElapsed > projectileData->maxTimeAlive)
+            {
+                projectileData->projectiles[projectileIndex].isActive = 0;
+            }
+            else
+            {
+                UpdatePosition(&projectileData->projectiles[projectileIndex].position,
+                               projectileData->projectiles[projectileIndex].wrappedPositions,
+                               openGLState->frameTime,
+                               projectileData->speed,
+                               projectileData->projectiles[projectileIndex].angle,
+                               windowDimensions);
+            }
         }
     }
     
