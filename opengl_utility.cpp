@@ -20,7 +20,8 @@ OpenGLRenderText(font_buffer *fontBuffer, char *text, glm::vec2 pos, float scale
         float w = character.size.x * scale;
         float h = character.size.y * scale;
         
-        // TODO: Consider caching all vertices and doing matrix transformations instead
+        // TODO: It wouldn't be a big deal to cache all of the vertex data for every glyph.
+        
         float vertices[24] = {
             xpos,     ypos + h,   0.0f, 0.0f,            
             xpos,     ypos,       0.0f, 1.0f,

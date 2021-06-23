@@ -374,6 +374,7 @@ UpdateGameAndRender(open_gl_state *openGLState,
         asteroidData->asteroids = (asteroid *)malloc(sizeof(asteroid) * asteroidData->maxCount);
         memset(asteroidData->asteroids, 0, sizeof(asteroid) * asteroidData->maxCount);
         
+        // NOTE: Spawning asteroids for the main menu screen
         glm::vec2 spawnPosition;
         for(int stageIndex = 0; stageIndex < 4; ++stageIndex)
         {
@@ -459,9 +460,11 @@ UpdateGameAndRender(open_gl_state *openGLState,
                                                    0.0f, (float)windowDimensions.height,
                                                    -1.0f, 1.0f);
         
+        // NOTE: Currently not working correctly. I need to explore how to maintain aspect ratio
         OpenGLUpdateAspectRatio(windowDimensions.width, windowDimensions.height);
     }
     
+    // Input processing
     if(input.isDown)
     {
         switch(input.key)
@@ -535,6 +538,7 @@ UpdateGameAndRender(open_gl_state *openGLState,
             {
                 if(gameState->stage > 0)
                 {
+                    // If game running, shoot asteroid
                     if(projectileData->currentCount < projectileData->maxCount)
                     {
                         float timeSinceLastProj = openGLState->secondsElapsed -
@@ -564,6 +568,7 @@ UpdateGameAndRender(open_gl_state *openGLState,
                 } 
                 else
                 {
+                    // Else reset game state
                     memset(asteroidData->asteroids, 0, sizeof(asteroid) * asteroidData->maxCount);
                     memset(projectileData->projectiles, 0, sizeof(projectile) * projectileData->maxCount);
                     asteroidData->currentCount = 0;
@@ -611,9 +616,8 @@ UpdateGameAndRender(open_gl_state *openGLState,
         bool spawnLeft = true;
         for(int stageIndex = 0; stageIndex < gameState->stage; ++stageIndex)
         {
-            // Alternate spawning asteroids on either side of the screen and not in the middle.
-            // I could do something fancier by using the postion of the player to not spawn
-            // asteroids near them
+            // NOTE: A half-baked attempt to prevent asteroids from spawning on top of the player.
+            // This is a frustrating problem I'm not sure how to solve yet!
             int regionRightMin = ((windowDimensions.width / 11) * 9);
             int regionLeftMax = ((windowDimensions.width / 11) * 2);
             
@@ -636,12 +640,14 @@ UpdateGameAndRender(open_gl_state *openGLState,
         gameState->stage++;
     }
     
+    // Update ship position if game is being played
     if(gameState->stage > 0)
     {
         UpdatePosition(&shipData->position, shipData->wrappedPositions, openGLState->frameTime, 
                        shipData->currentSpeed, shipData->movementAngle, windowDimensions);
     }
     
+    // Update position of active asteroids
     for(int projectileIndex = 0; projectileIndex < projectileData->maxCount; ++projectileIndex)
     {
         if(projectileData->projectiles[projectileIndex].isActive)
@@ -665,6 +671,7 @@ UpdateGameAndRender(open_gl_state *openGLState,
         }
     }
     
+    // Update position of active projectiles
     for(int asteroidIndex = 0; asteroidIndex < asteroidData->maxCount; ++asteroidIndex)
     {
         if(asteroidData->asteroids[asteroidIndex].isActive)
@@ -681,6 +688,7 @@ UpdateGameAndRender(open_gl_state *openGLState,
         }
     }
     
+    // Apply animation transformations for the player ship
     if(shipData->isAnimating)
     {
         if(shipData->animationCounter > shipData->collisionMaxTimeout)
@@ -696,10 +704,15 @@ UpdateGameAndRender(open_gl_state *openGLState,
         }
     }
     
+    // Collision checking
     if(gameState->stage > 0)
     {
         collision_box asteroidCollisionBox = {};
         collision_box projectileCollisionBox = {};
+        
+        // If we're on a frame where the ship has a collision timeout (is immune to damage)
+        // don't check collisions with it's geometry, instead check only the projectiles and
+        // asteroids.
         if(shipData->collisionTimeout)
         {
             for(int aIndex = 0; aIndex < asteroidData->maxCount; ++aIndex)
@@ -828,12 +841,14 @@ UpdateGameAndRender(open_gl_state *openGLState,
                             gameState->stage = -1;
                             shipData->isVisible = 0;
                             
+                            // Check if the player got a score higher than their lowest recorded score
                             if(gameState->score > gameState->topTenScores[9])
                             {
                                 gameState->topTenScores[9] = gameState->score;
                                 InsertionSort(gameState->topTenScores, ArrayCount(gameState->topTenScores));
                             }
                             
+                            // Save high scores offline
                             char writeBuffer[12 * 10] = {};
                             int err;
                             int startIndex = 0;
@@ -899,6 +914,9 @@ UpdateGameAndRender(open_gl_state *openGLState,
         }
     }
     
+    // Drawing
+    // TODO: All of the objects with wrapped positions should be checked if they're on screen before
+    // being issued draw calls
     glClear(GL_COLOR_BUFFER_BIT);
     glUseProgram(openGLState->shaderProgram);
     glUniformMatrix4fv(openGLState->projectionUniform, 1, GL_FALSE,
@@ -1019,7 +1037,6 @@ UpdateGameAndRender(open_gl_state *openGLState,
         int err;
         for(int i = 0; i < 10; ++i)
         {
-            // TODO: Logging
             err = snprintf(scoreBuffer, 
                            sizeof(scoreBuffer), 
                            "%d", gameState->topTenScores[i]);
