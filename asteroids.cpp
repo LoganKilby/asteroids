@@ -33,23 +33,6 @@ IntArrayToInt(int *numbers, int size)
     return result;
 }
 
-static float
-NormalizeAngle(float a)
-{
-    float result = 0;
-    unsigned int fullRotations = fabs(a / 360);
-    if(a < 0)
-    {
-        a += (360 * fullRotations) + 360;
-    }
-    else if(a > 0)
-    {
-        a -= 360 * fullRotations;
-    }
-    
-    return a;
-}
-
 static void
 SpawnAsteroid(asteroid_data *asteroidData, glm::vec2 position, glm::vec2 size, int isSmall)
 {
@@ -477,21 +460,7 @@ UpdateGameAndRender(open_gl_state *openGLState,
                        shipData->movementAngle != shipData->angle) 
                     {
                         shipData->currentSpeed -= 2 * SHIP_ACCELERATION * openGLState->frameTime;
-#if 0
                         // TODO: Simulate curved motion.
-                        shipData->movementAngle = NormalizeAngle(shipData->movementAngle);
-                        shipData->angle = NormalizeAngle(shipData->angle);
-                        if(shipData->movementAngle < shipData->angle)
-                        {
-                            shipData->movementAngle += 
-                                (shipData->angle - shipData->movementAngle) * openGLState->frameTime;
-                        }
-                        else if(shipData->movementAngle > shipData->angle)
-                        {
-                            shipData->movementAngle -= 
-                                (shipData->movementAngle - shipData->angle) * openGLState->frameTime;
-                        }
-#endif
                     }
                     else
                     {
