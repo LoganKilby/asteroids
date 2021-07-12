@@ -1,4 +1,3 @@
-// TODO: do collision checking
 #include "collision.h"
 
 static bool
