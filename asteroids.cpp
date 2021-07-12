@@ -673,7 +673,7 @@ UpdateGameAndRender(open_gl_state *openGLState,
         }
     }
     
-    // Collision checking
+    // n squared collision checking
     if(gameState->stage > 0)
     {
         collision_box asteroidCollisionBox = {};
